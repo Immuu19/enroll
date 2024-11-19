@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Data
 @Entity
-@Getter
-@Setter
 @Table(
         name = "enrollment_status",
         uniqueConstraints = @UniqueConstraint(columnNames = {"username", "courseId"}) // Ensure uniqueness
@@ -34,4 +32,44 @@ public class EnrollmentStatus {
     // No-args constructor required by JPA
     public EnrollmentStatus() {}
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public EnrollmentStatusType getEnrollmentStatus() {
+        return enrollmentStatus;
+    }
+
+    public void setEnrollmentStatus(EnrollmentStatusType enrollmentStatus) {
+        this.enrollmentStatus = enrollmentStatus;
+    }
+
+    public boolean isCoursePaymentStatus() {
+        return coursePaymentStatus;
+    }
+
+    public void setCoursePaymentStatus(boolean coursePaymentStatus) {
+        this.coursePaymentStatus = coursePaymentStatus;
+    }
 }
