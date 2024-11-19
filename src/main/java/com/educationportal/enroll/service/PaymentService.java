@@ -1,8 +1,7 @@
 package com.educationportal.enroll.service;
 
-import com.educationportal.enroll.dto.PaymentRequest;
-import com.educationportal.enroll.dto.PaymentResponse;
+import com.educationportal.enroll.entity.PaymentDetails;
 
 public interface PaymentService {
-    PaymentResponse processPayment(PaymentRequest paymentRequest);
+    String makePayment(String username, double amount);
 }

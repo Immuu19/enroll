@@ -1,41 +1,45 @@
 package com.educationportal.enroll.service.impl;
 
-import com.educationportal.enroll.dto.PaymentRequest;
-import com.educationportal.enroll.dto.PaymentResponse;
-import com.educationportal.enroll.model.Enrolment;
-import com.educationportal.enroll.repository.EnrolmentRepository;
+import com.educationportal.enroll.entity.PaymentDetails;
+import com.educationportal.enroll.repository.PaymentRepository;
 import com.educationportal.enroll.service.PaymentService;
+import com.educationportal.enroll.entity.PaymentDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
-    private EnrolmentRepository enrolmentRepository;
+    private PaymentRepository paymentRepository;
 
-    private Random random = new Random();
+
 
     @Override
-    @Transactional
-    public PaymentResponse processPayment(PaymentRequest paymentRequest) {
-        // Fetch the enrolment details
-        Enrolment enrolment = enrolmentRepository.findById(paymentRequest.getEnrolmentId())
-                .orElseThrow(() -> new RuntimeException("Enrolment not found"));
+    public String makePayment(String username, double amount) {
 
-        // Simulate payment processing (50% chance of success)
-        boolean paymentSuccess = random.nextBoolean();
-
-        if (paymentSuccess) {
-            // Update the payment status in the database
-            enrolment.setPaymentStatus(true);
-            enrolmentRepository.save(enrolment);
-            return new PaymentResponse(true, "Payment processed successfully.");
-        } else {
-            return new PaymentResponse(false, "Payment failed. Please try again.");
+        // Simulate payment logic
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Invalid payment amount.");
         }
+
+        // Generate a mock payment reference
+        String paymentReference = UUID.randomUUID().toString();
+
+        PaymentDetails paymentDetails = new PaymentDetails();
+
+        paymentDetails.setUsername(username);
+        paymentDetails.setAmountPaid(amount);
+        paymentDetails.setPaymentReference(paymentReference);
+        paymentDetails.setPaymentSuccess(true);
+        paymentRepository.save(paymentDetails);
+
+        // Optional: Log payment information to DB or console
+        System.out.println("Payment successful for username: " + username + ", Amount: " + amount);
+
+        return paymentReference;
     }
+
 }
