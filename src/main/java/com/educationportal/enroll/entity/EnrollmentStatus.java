@@ -5,19 +5,29 @@ import lombok.Data;
 
 @Data
 @Entity
-@IdClass(EnrollmentId.class)
+@Table(
+        name = "enrollment_status",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"username", "courseId"}) // Ensure uniqueness
+)
 public class EnrollmentStatus {
 
+    // Auto-increment primary key
     @Id
-    private String username;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
+    // Composite key fields
+    private String username;
     private String courseId;
 
+    // Enrollment status with default value TBA
     @Enumerated(EnumType.STRING)
-    private EnrollmentStatusType enrollmentStatus;
+    private EnrollmentStatusType enrollmentStatus = EnrollmentStatusType.PAYMENT_PENDING;
 
-    public boolean coursePaymentStatus;
+    // Payment status with default value false
+    private boolean coursePaymentStatus = false;
 
-    private String discontinueReason;
+    // No-args constructor required by JPA
+    public EnrollmentStatus() {}
+
 }

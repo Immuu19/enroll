@@ -11,6 +11,8 @@ public class PaymentDetails {
     @Id
     private String username;
 
+    private String courseId;
+
     private String paymentReference;
 
     private double amountPaid;

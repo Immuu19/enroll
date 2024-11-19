@@ -16,9 +16,8 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentRepository paymentRepository;
 
 
-
     @Override
-    public String makePayment(String username, double amount) {
+    public String makePayment(String username,String courseId, double amount) {
 
         // Simulate payment logic
         if (amount <= 0) {
@@ -32,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentDetails.setUsername(username);
         paymentDetails.setAmountPaid(amount);
+        paymentDetails.setCourseId(courseId);
         paymentDetails.setPaymentReference(paymentReference);
         paymentDetails.setPaymentSuccess(true);
         paymentRepository.save(paymentDetails);
