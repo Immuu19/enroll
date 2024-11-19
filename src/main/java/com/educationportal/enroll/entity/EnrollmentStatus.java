@@ -2,9 +2,13 @@ package com.educationportal.enroll.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 @Entity
+@Getter
+@Setter
 @Table(
         name = "enrollment_status",
         uniqueConstraints = @UniqueConstraint(columnNames = {"username", "courseId"}) // Ensure uniqueness

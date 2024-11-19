@@ -9,4 +9,6 @@ public class EnrollmentId implements Serializable {
     private String username;
     private String courseId;
 
+    public  setUsername( ) {
+    }
 }
