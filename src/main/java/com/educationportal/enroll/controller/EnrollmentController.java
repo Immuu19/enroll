@@ -3,6 +3,7 @@ package com.educationportal.enroll.controller;
 import com.educationportal.enroll.entity.EnrollmentId;
 import com.educationportal.enroll.entity.EnrollmentStatus;
 import com.educationportal.enroll.service.EnrollmentService;
+import com.educationportal.enroll.service.ValidationService;
 import com.educationportal.enroll.service.PaymentService;
 import com.educationportal.enroll.dto.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class EnrollmentController {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private ValidationService validationService;
 
 
     @PostMapping(value = "/enrollStudent", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -117,5 +121,25 @@ public class EnrollmentController {
         return enrollmentService.deleteEnrollmentStatusById(id);
     }
 
+    @PostMapping("/validateUserAndCourse")
+    public ResponseEntity<?> validateUserAndCourse(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String courseId = request.get("course");
 
+        boolean isUserValid = validationService.isUserValid(username);
+        boolean isCourseValid = validationService.isCourseValid(courseId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("username", username);
+        response.put("course", courseId);
+        response.put("isUserValid", isUserValid);
+        response.put("isCourseValid", isCourseValid);
+
+        if (!isUserValid || !isCourseValid) {
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.put("message", "Validation successful");
+        return ResponseEntity.ok(response);
+    }
 }
