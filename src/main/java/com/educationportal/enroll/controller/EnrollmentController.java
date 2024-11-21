@@ -36,9 +36,16 @@ public class EnrollmentController {
 
 
     @PostMapping(value = "/enrollStudent", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> enrollStudent(@RequestBody EnrollmentStatus enrollmentStatus) {
+    public ResponseEntity<?> enrollStudent(@RequestHeader("Authorization") String authorizationHeader,@RequestBody EnrollmentStatus enrollmentStatus) {
         String username = enrollmentStatus.getUsername();
         String courseId = enrollmentStatus.getCourseId();
+
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+        }
 
         try {
             // Attempt to enroll the student
@@ -53,16 +60,29 @@ public class EnrollmentController {
 
 
     @GetMapping(value = "/checkEnrollment/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EnrollmentStatus>> checkEnrollment(@PathVariable String username) {
+    public ResponseEntity<?> checkEnrollment(@RequestHeader("Authorization") String authorizationHeader,@PathVariable String username) {
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+        }
         return ResponseEntity.ok(enrollmentService.checkEnrollment(username));
     }
 
     @PostMapping(value = "/makePayment" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> makePayment(@RequestBody PaymentRequest paymentRequest) {
+    public ResponseEntity<?> makePayment(@RequestHeader("Authorization") String authorizationHeader,@RequestBody PaymentRequest paymentRequest) {
         try {
             String username = paymentRequest.getUsername();
             String courseId = paymentRequest.getCourseId();
             double amount = paymentRequest.getAmount();
+
+            String jwtToken = authorizationHeader.substring(7);
+
+            System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+            if (!jwtUtil.validateToken(jwtToken)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+            }
 
             Optional<EnrollmentStatus> optionalEnrollment = enrollmentService.findEnrollmentByUsernameAndCourseId(username, courseId);
 
@@ -95,7 +115,14 @@ public class EnrollmentController {
 
 
     @GetMapping("/getEnrolledCourses/{username}")
-    public ResponseEntity<?> getEnrolledCourses(@PathVariable String username) {
+    public ResponseEntity<?> getEnrolledCourses(@RequestHeader("Authorization") String authorizationHeader,@PathVariable String username) {
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+        }
+
         try {
             List<EnrollmentStatus> enrolledCourses = enrollmentService.getEnrolledCoursesByUser(username);
             if (enrolledCourses.isEmpty()) {
@@ -108,7 +135,14 @@ public class EnrollmentController {
     }
 
     @GetMapping("/getStudentsInCourse/{courseId}")
-    public ResponseEntity<?> getStudentsInCourse(@PathVariable String courseId) {
+    public ResponseEntity<?> getStudentsInCourse(@RequestHeader("Authorization") String authorizationHeader,@PathVariable String courseId) {
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+        }
+
         try {
             List<EnrollmentStatus> students = enrollmentService.getStudentsByCourse(courseId);
             if (students.isEmpty()) {
@@ -121,7 +155,13 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/deleteEnrollment/{id}")
-    public ResponseEntity<String> deleteEnrollmentStatus(@PathVariable Long id) {
+    public ResponseEntity<String> deleteEnrollmentStatus(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
+        }
         return enrollmentService.deleteEnrollmentStatusById(id);
     }
 
@@ -134,8 +174,11 @@ public class EnrollmentController {
 
         System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
         if (!jwtUtil.validateToken(jwtToken)){
-            return ResponseEntity.badRequest().body("UNAUTHORISED. PLease use valid token");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("UNAUTHORISED. PLease use valid token");
         }
+
+        //System.out.println("JWT");
+        //System.out.println(jwtUtil.extractClaims(jwtToken));
 
         boolean isUserValid = validationService.isUserValid(username,jwtToken);
         boolean isCourseValid = validationService.isCourseValid(courseId);
