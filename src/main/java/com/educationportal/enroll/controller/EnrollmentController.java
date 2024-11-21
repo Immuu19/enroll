@@ -6,6 +6,7 @@ import com.educationportal.enroll.service.EnrollmentService;
 import com.educationportal.enroll.service.ValidationService;
 import com.educationportal.enroll.service.PaymentService;
 import com.educationportal.enroll.dto.PaymentRequest;
+import com.educationportal.enroll.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,9 @@ public class EnrollmentController {
 
     @Autowired
     private ValidationService validationService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @PostMapping(value = "/enrollStudent", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -122,11 +126,18 @@ public class EnrollmentController {
     }
 
     @PostMapping("/validateUserAndCourse")
-    public ResponseEntity<?> validateUserAndCourse(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> validateUserAndCourse(@RequestHeader("Authorization") String authorizationHeader,@RequestBody Map<String, String> request) {
         String username = request.get("username");
         String courseId = request.get("course");
 
-        boolean isUserValid = validationService.isUserValid(username);
+        String jwtToken = authorizationHeader.substring(7);
+
+        System.out.println(" JWT  " +jwtUtil.validateToken(jwtToken));
+        if (!jwtUtil.validateToken(jwtToken)){
+            return ResponseEntity.badRequest().body("UNAUTHORISED. PLease use valid token");
+        }
+
+        boolean isUserValid = validationService.isUserValid(username,jwtToken);
         boolean isCourseValid = validationService.isCourseValid(courseId);
 
         Map<String, Object> response = new HashMap<>();

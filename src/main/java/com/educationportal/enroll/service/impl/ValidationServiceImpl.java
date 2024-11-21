@@ -21,12 +21,12 @@ public class ValidationServiceImpl implements ValidationService {
     private static final String USER_SERVICE_URL = "http://localhost:3000/user";
     private static final String COURSES_SERVICE_URL = "http://localhost:8080/api/courses";
 
-    public boolean isUserValid(String username) {
+    public boolean isUserValid(String username, String jwtToken) {
         try {
             String url = USER_SERVICE_URL + "/" + username;
 
             HttpHeaders headers = new HttpHeaders();
-            String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3MzIxNTcxNTIsImV4cCI6MTczMjE2MDc1Mn0.M1xlNmuB1mS_vZkvE8wy8e233c-XMSgCdHRanoRjBvg";
+            //String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3MzIxNTcxNTIsImV4cCI6MTczMjE2MDc1Mn0.M1xlNmuB1mS_vZkvE8wy8e233c-XMSgCdHRanoRjBvg";
             headers.set("Authorization", "Bearer " + jwtToken);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
