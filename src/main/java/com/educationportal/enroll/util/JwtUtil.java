@@ -4,12 +4,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "YRlIorqILmPuFqhZsW3B3NzcT7JQXx9HT9iM8SJM/U0=" ; // Same as Node.js secret
-
+    @Value("${app.SECRET_KEY}")
+    private String SECRET_KEY;
     // Validate the JWT token
     public boolean validateToken(String token) {
         try {
@@ -28,4 +29,7 @@ public class JwtUtil {
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token).getBody();
     }
+
+
+
 }
