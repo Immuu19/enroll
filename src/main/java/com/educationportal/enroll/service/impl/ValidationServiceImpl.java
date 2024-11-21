@@ -26,7 +26,7 @@ public class ValidationServiceImpl implements ValidationService {
             String url = USER_SERVICE_URL + "/" + username;
 
             HttpHeaders headers = new HttpHeaders();
-            String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3MzIxMzgyNTIsImV4cCI6MTczMjE0MTg1Mn0.8lKAmqz2DEAZsjZGsJkCTgNeFdBKFZ6Ae-kCNp15Z4M";
+            String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3MzIxNTcxNTIsImV4cCI6MTczMjE2MDc1Mn0.M1xlNmuB1mS_vZkvE8wy8e233c-XMSgCdHRanoRjBvg";
             headers.set("Authorization", "Bearer " + jwtToken);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
@@ -61,8 +61,9 @@ public class ValidationServiceImpl implements ValidationService {
             System.out.println("Response Status Code: " + response.getStatusCode());
             System.out.println("Response Headers: " + response.getHeaders());
             System.out.println("Response Body: " + response.getBody());
-            System.out.println(response);
-            return true;
+            System.out.println("\"id\":"+courseId);
+            System.out.println(response.getBody().contains("id:"+courseId));
+            return response.getBody().contains("\"id\":"+courseId);
         } catch (Exception e) {
             // Handle failure, e.g., logging
             System.out.println(e);
